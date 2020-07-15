@@ -15,9 +15,14 @@ const layout = css`
 
   padding: 0 16px;
 
-  .todo {
+  .rgp {
+    color: ${theme.primary100};
     font-size: ${pxToRem(32)};
     font-weight: bold;
+  }
+
+  .riority {
+    font-size: ${pxToRem(32)};
   }
 
   .list {
@@ -45,7 +50,8 @@ const Header = ({ className }) => {
   return (
     <nav className={className}>
       <div>
-        <span className="todo">Todo</span>
+        <span className="rgp">RGP</span>
+        <span className="riority">riority</span>
         <span className="list">List</span>
       </div>
       <ul className="navigation-links">

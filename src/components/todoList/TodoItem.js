@@ -2,60 +2,85 @@ import React from "react";
 import styled, { css } from "styled-components";
 import { useHistory } from "react-router-dom";
 import theme from "../../style/theme";
-import { formatDistanceToNow } from "date-fns";
+import { formatDistanceToNowStrict } from "date-fns";
 import { PATH } from "../routes/path";
+import Button from "../ui/Button";
+import { useAppState } from "../../stores/AppState";
+import { pxToRem } from "../../style/styleUtils";
 
 const layout = css`
-  width: 100%;
-  background: ${theme.primary050};
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-
   display: flex;
-  justify-content: center;
   flex-direction: column;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
+  border-radius: 10px;
+  overflow: hidden;
 
-  padding: 12px;
-
-  :focus {
-    outline: none;
-    background: ${theme.primary100};
-  }
-
-  .todo-title {
-    height: 100%;
+  .title-button {
     width: 100%;
+    flex: 1;
     display: flex;
     justify-content: center;
+    align-items: center;
+
+    background: ${theme.white};
+    color: ${theme.primary700};
+    font-size: ${pxToRem(24)};
+
+    border: none;
+    cursor: pointer;
+
+    padding: 12px;
+
+    :hover,
+    :focus {
+      outline: none;
+      background: ${theme.neutral050};
+    }
   }
 
-  h2 {
-    margin: auto 0;
+  ${Button} {
+    background: ${theme.primary050};
+    color: ${theme.primary500};
+    font-weight: bold;
   }
 
   .todo-header {
+    height: 70px;
     display: flex;
-    justify-content: flex-end;
-    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+
+    background: ${theme.primary500};
+    padding: 0 12px;
+
+    span {
+      color: ${theme.white};
+      margin-left: auto;
+    }
   }
 `;
 
-function TodoItem({ className, id, title, createdAt }) {
+function TodoItem({ className, id, title, createdAt, completed }) {
   const history = useHistory();
+  const { markAsDoneById } = useAppState();
 
   return (
-    <button
-      className={className}
-      onClick={() => history.push(`${PATH.TODO}/${id}`)}
-    >
+    <div className={className}>
       <div className="todo-header">
-        <span className="time-stamp">{formatDistanceToNow(createdAt)}</span>
+        {!completed && (
+          <Button onClick={() => markAsDoneById(id)}>Mark as done</Button>
+        )}
+        <span className="time-stamp">
+          {formatDistanceToNowStrict(createdAt, { addSuffix: true })}
+        </span>
       </div>
-      <div className="todo-title">
-        <h2>{title}</h2>
-      </div>
-    </button>
+      <button
+        className="title-button"
+        onClick={() => history.push(`${PATH.TODO}/${id}`)}
+      >
+        {title}
+      </button>
+    </div>
   );
 }
 

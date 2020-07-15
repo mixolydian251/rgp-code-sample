@@ -57,7 +57,7 @@ const editTodo = (id) => (edits) => {
     if (todo.id === id) {
       return {
         ...todo,
-        edits,
+        ...edits,
       };
     }
 

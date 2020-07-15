@@ -1,14 +1,30 @@
 import React from "react";
 import styled, { css } from "styled-components";
-import { Formik, Form, Field, ErrorMessage } from "formik";
+import { Formik, Form } from "formik";
+import { useHistory } from "react-router-dom";
 import Button from "../ui/Button";
 import TextField from "../ui/TextField";
+import { descriptionValidation, titleValidation } from "./todoValidators";
+import { useAppState } from "../../stores/AppState";
+import { PATH } from "../routes/path";
+import theme from "../../style/theme";
 
 const layout = css`
+  margin: 0 20px;
+
+  h1 {
+    color: ${theme.primary500};
+    font-weight: normal;
+  }
+
   form {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  ${TextField} {
+    margin-bottom: 20px;
   }
 `;
 
@@ -17,47 +33,42 @@ const initialValues = {
   description: "",
 };
 
-const CreateTodo = ({ className }) => (
-  <div className={className}>
-    <h1>Create a new Todo</h1>
-    <Formik
-      initialValues={initialValues}
-      validate={(values) => {
-        const errors = {};
-        if (!values.email) {
-          errors.email = "Required";
-        } else if (
-          !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)
-        ) {
-          errors.email = "Invalid email address";
-        }
-        return errors;
-      }}
-      onSubmit={(values, { setSubmitting }) => {
-        setTimeout(() => {
-          alert(JSON.stringify(values, null, 2));
-          setSubmitting(false);
-        }, 400);
-      }}
-    >
-      {({ isSubmitting }) => (
-        <Form>
-          <TextField
-            name="title"
-            type="textarea"
-            label="Title"
-            placeholder="Enter a title.."
-          />
-          <Field name="email" />
-          <ErrorMessage name="email" component="div" />
-          <Field type="password" name="password" />
-          <ErrorMessage name="password" component="div" />
-          <Button disabled={isSubmitting}>Submit</Button>
-        </Form>
-      )}
-    </Formik>
-  </div>
-);
+const CreateTodo = ({ className }) => {
+  const { createTodo } = useAppState();
+  const history = useHistory();
+
+  return (
+    <div className={className}>
+      <h1>Create a new Todo</h1>
+      <Formik
+        initialValues={initialValues}
+        onSubmit={(values) => {
+          createTodo(values).then(() => history.push(PATH.LIST));
+        }}
+      >
+        {({ handleSubmit, isSubmitting }) => (
+          <Form>
+            <TextField
+              name="title"
+              label="Title"
+              placeholder="Enter a title.."
+              validate={titleValidation}
+            />
+            <TextField
+              name="description"
+              label="Description"
+              placeholder="Enter a description.."
+              validate={descriptionValidation}
+            />
+            <Button disabled={isSubmitting} onClick={handleSubmit}>
+              Submit
+            </Button>
+          </Form>
+        )}
+      </Formik>
+    </div>
+  );
+};
 
 export default styled(CreateTodo)`
   ${layout}

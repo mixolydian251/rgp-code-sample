@@ -13,6 +13,8 @@ class AppState extends Component {
       loading: false,
       getTodos: this.getTodos,
       deleteTodoById: this.deleteTodoById,
+      createTodo: this.createTodo,
+      markAsDoneById: this.markAsDoneById,
     };
   }
 
@@ -36,6 +38,14 @@ class AppState extends Component {
         }))
       )
       .catch(alertError);
+  };
+
+  createTodo = (values) => {
+    return API.create(values).catch(alertError);
+  };
+
+  markAsDoneById = (id) => {
+    API.edit(id)({ completed: true }).then(this.getTodos).catch(alertError);
   };
 
   render() {

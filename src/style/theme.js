@@ -90,6 +90,7 @@ export default {
   success300: colors.teal300,
   success500: colors.teal500,
   success700: colors.teal700,
+  neutral050: colors.grey050,
   neutral100: colors.grey100,
   neutral300: colors.grey300,
   neutral500: colors.grey500,
